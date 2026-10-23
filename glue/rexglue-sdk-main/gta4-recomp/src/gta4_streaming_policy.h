@@ -19,7 +19,7 @@ inline constexpr uint64_t kNanosecondsPerSecond = 1000000000;
 // queries its allocator and enforces the actual backing capacity.
 inline uint32_t RequestedBudget(uint32_t original, double scale) noexcept {
   if (original == 0 || !std::isfinite(scale) || scale <= 1.0) return original;
-  const double result = static_cast<double>(original) * std::min(scale, 4.0);
+  const double result = static_cast<double>(original) * std::min(scale, 8.0);
   return static_cast<uint32_t>(
       std::min(result, static_cast<double>(std::numeric_limits<uint32_t>::max())));
 }

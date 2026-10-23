@@ -23,3 +23,9 @@
 --gta4_profile_native_detailed_cpu=false
 --gta4_profile_native_detailed_gpu=false
 --gta4_fps_guard=0
+--gta4_streaming_modern=true
+--gta4_streaming_deadline_order=true
+--gta4_streaming_budget_scale=6.0
+--gta4_streaming_preload_min=150.0
+--gta4_streaming_preload_max=350.0
+--gta4_streaming_prefetch_pending_limit=512

@@ -27,7 +27,7 @@ REXCVAR_DEFINE_BOOL(gta4_streaming_deadline_order, true, "GTA IV/Streaming",
     .lifecycle(rex::cvar::Lifecycle::kRequiresRestart);
 REXCVAR_DEFINE_DOUBLE(gta4_streaming_budget_scale, 1.5, "GTA IV/Streaming",
                       "Scale nonzero requested budgets; retain original allocator capacity clamps")
-    .range(1.0, 4.0).lifecycle(rex::cvar::Lifecycle::kRequiresRestart);
+    .range(1.0, 8.0).lifecycle(rex::cvar::Lifecycle::kRequiresRestart);
 REXCVAR_DEFINE_UINT32(gta4_streaming_physical_reserve_mb, 16, "GTA IV/Streaming",
                       "Headroom retained for unmanaged resources when increasing the physical budget")
     .range(0, 256).lifecycle(rex::cvar::Lifecycle::kRequiresRestart);
