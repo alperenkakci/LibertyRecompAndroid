@@ -1733,8 +1733,8 @@ constexpr uint32_t kSpirvMagic = 0x07230203;
 // Frame-local transient uploads grow in reusable 16 MiB blocks. The exact
 // byte value and block-count rounding are checked with Python in the renderer
 // implementation audit.
-constexpr VkDeviceSize kNativeUploadBufferSize = 0x1000000;
-constexpr VkDeviceSize kNativeUploadGrowthGranularity = 0x1000000;
+constexpr VkDeviceSize kNativeUploadBufferSize = 0x4000000;
+constexpr VkDeviceSize kNativeUploadGrowthGranularity = 0x2000000;
 // Derived and checked by Python: 16 MiB is 16,777,216 bytes and is exactly
 // divisible by the 16-byte binding/upload alignment used by this arena.
 constexpr VkDeviceSize kNativePersistentBufferBlockSize = 16777216;
@@ -9832,8 +9832,8 @@ void Gta4NativeGraphicsSystem::ReleaseUnusedPersistentBuffers(uint64_t completed
   // A fixed release count can permanently trail the streaming production rate.
   // Release above proves CPU snapshot expiry and the last GPU submission's
   // completion. Keep two fully free blocks, not the historical high-water mark.
-  constexpr uint64_t kRetainedFreeArenaBytes = 33554432;
-  constexpr uint64_t kFreeArenaGraceEpochs = 120;
+  constexpr uint64_t kRetainedFreeArenaBytes = 268435456ULL;
+  constexpr uint64_t kFreeArenaGraceEpochs = 1800;
   if (persistent_arena_reclamation_epoch_ != std::numeric_limits<uint64_t>::max()) {
     ++persistent_arena_reclamation_epoch_;
   }
@@ -16327,6 +16327,20 @@ bool Gta4NativeGraphicsSystem::CreateNativeDescriptors() {
 bool Gta4NativeGraphicsSystem::CreateTextureDetileObjects() {
   auto* vulkan_provider = static_cast<ui::vulkan::VulkanProvider*>(provider_.get());
   const ui::vulkan::VulkanDevice* vulkan_device = vulkan_provider->vulkan_device();
+  VkPhysicalDeviceProperties physical_properties{};
+  vulkan_device->vulkan_instance()->functions().vkGetPhysicalDeviceProperties(
+      vulkan_device->physical_device(), &physical_properties);
+  const std::string_view device_name = physical_properties.deviceName;
+  if (device_name.find("Adreno (TM) 8") != std::string_view::npos ||
+      device_name.find("Adreno 8") != std::string_view::npos ||
+      device_name.find("Gen 8") != std::string_view::npos) {
+#if REX_PLATFORM_ANDROID
+    __android_log_print(ANDROID_LOG_INFO, "LibertyRecomp",
+                        "GPU texture detile disabled for %s (falls back to CPU to prevent missing textures)",
+                        physical_properties.deviceName);
+#endif
+    return false;
+  }
   const auto& dfn = vulkan_device->functions();
   const VkDevice device = vulkan_device->device();
   VkPushConstantRange push_range{};

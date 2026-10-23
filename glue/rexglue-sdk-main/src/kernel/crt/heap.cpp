@@ -23,7 +23,7 @@ REXCVAR_DEFINE_BOOL(rexcrt_heap_enable, false, "crt",
                     "Enable o1heap-backed CRT heap for RtlAllocateHeap/Free/Size/ReAlloc")
     .lifecycle(rex::cvar::Lifecycle::kInitOnly);
 
-REXCVAR_DEFINE_UINT32(rexcrt_heap_size_mb, 256, "crt", "Heap size in megabytes")
+REXCVAR_DEFINE_UINT32(rexcrt_heap_size_mb, 1024, "crt", "Heap size in megabytes")
     .lifecycle(rex::cvar::Lifecycle::kInitOnly)
     .range(1, 2048);
 
